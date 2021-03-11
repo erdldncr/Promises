@@ -29,19 +29,16 @@ let btn=document.getElementById('submit_btn')
 let select=document.querySelector('select')
 
 
-btn.addEventListener('click',()=>{
-  checkOrder(select.value)
-  .then((resolve)=>{
-    
-    return payment(resolve).
-    then((resolve)=>{
-      return stockControl(resolve)
-      .then(resolve=>console.log(resolve))
-      .catch(reject=>console.log(reject))
-    })
-    .catch((reject)=>console.log(reject))
-  })
-  .catch((reject)=>console.log(reject))
+btn.addEventListener('click',async ()=>{
+  try{
+    const order=await checkOrder(select.value)
+    const paymentConformation=await payment(order)
+    const stockControlConformation=await stockControl(paymentConformation)
+  }
+  catch(reject){
+    console.log(reject)
+  }
+
 })
 
 
@@ -98,7 +95,6 @@ const payment = (resolvedValueArray) => {
 const stockControl = (resolvedValueArray) => {
   return new Promise((resolve,reject)=>{
     console.log('To cashier wait for checking stock...')
-
     setTimeout(()=>{
       if(resolvedValueArray[1]>0){
         resolve(`${select.value} stock is ${resolvedValueArray[1]}`)
